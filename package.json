@@ -1,0 +1,43 @@
+{
+  "name": "steam-trade-electron",
+  "version": "1.0.0",
+  "description": "Beautiful Steam Trade Handler - Electron App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.6.0",
+    "inquirer": "^12.9.4",
+    "steam-totp": "^2.1.2",
+    "steam-tradeoffer-manager": "^2.12.2",
+    "steam-user": "^5.2.3",
+    "steamcommunity": "^3.49.0"
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.steamtrade.electron",
+    "productName": "Steam Trade Handler",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "renderer/**/*",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "renderer/assets/icon.ico"
+    }
+  }
+}

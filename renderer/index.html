@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Trading Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" />
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-gamepad"></i>
+                    <h1>Steam Trading Assistant</h1>
+                </div>
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-dot offline"></span>
+                    <span class="status-text">Offline</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+                         <!-- Login Section -->
+             <section id="loginSection" class="login-section">
+                 <div class="login-container">
+                     <!-- maFiles Section (Left Side) -->
+                     <div class="mafiles-sidebar">
+                         <div class="mafiles-header">
+                             <h3><i class="fas fa-key"></i> Available Authenticators</h3>
+                             <button id="refreshMaFilesBtn" class="refresh-btn">
+                                 <i class="fas fa-sync-alt"></i>
+                                 Refresh
+                             </button>
+                         </div>
+                         <div id="maFilesList" class="mafiles-list">
+                             <div class="no-mafiles">
+                                 <i class="fas fa-key"></i>
+                                 <p>No maFiles found in /mafiles directory</p>
+                                 <small>
+                                     Place your Steam Guard authenticator files (.mafile) in the /mafiles folder for automatic authentication
+                                 </small>
+                             </div>
+                         </div>
+                     </div>
+                     
+                     <!-- Login Form (Right Side) -->
+                     <div class="login-card">
+                         <div class="login-header">
+                             <h2>Login to Steam</h2>
+                         </div>
+                         <form id="loginForm" class="login-form">
+                             <div class="form-group">
+                                 <label for="username">
+                                     <i class="fas fa-user"></i>
+                                     Username
+                                 </label>
+                                 <input type="text" id="username" name="username" required>
+                             </div>
+                                                           <div class="form-group">
+                                  <label for="password">
+                                      <i class="fas fa-lock"></i>
+                                      Password
+                                  </label>
+                                  <input type="password" id="password" name="password" required>
+                                  <small style="color: #8b5cf6; font-size: 0.8rem;">
+                                      <i class="fas fa-info-circle"></i>
+                                      Password is always required for security. Steam Guard code will be auto-generated if you select a maFile.
+                                  </small>
+                              </div>
+                             <div class="form-group" id="twoFactorGroup">
+                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                     <label for="twoFactorCode">
+                                         <i class="fas fa-shield-alt"></i>
+                                         Steam Guard Code (Optional)
+                                     </label>
+                                     <small style="color: #8b5cf6; font-size: 0.8rem; cursor: pointer;" onclick="toggleTwoFactorHelp()">
+                                         <i class="fas fa-question-circle"></i>
+                                         Why use this?
+                                     </small>
+                                 </div>
+                                 <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="Enter 5-character Steam Guard code (or leave empty for auto-auth)" maxlength="5" autocomplete="off">
+                                 <div id="maFileStatus" style="margin-top: 0.5rem; padding: 0.5rem; border-radius: 5px; display: none;">
+                                     <small style="color: #10b981; font-size: 0.8rem;">
+                                         <i class="fas fa-check-circle"></i>
+                                         <span id="maFileStatusText">maFile found - auto-authentication available</span>
+                                     </small>
+                                 </div>
+                                 <small style="color: #8b5cf6; font-size: 0.8rem;">
+                                     <i class="fas fa-info-circle"></i>
+                                     Steam Guard code is optional if you have maFiles in the /mafiles directory
+                                 </small>
+                             </div>
+                             
+                                                           <!-- maFile Selection Status -->
+                              <div id="selectedMaFileStatus" style="margin-top: 1rem; padding: 1rem; border-radius: 10px; display: none; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4);">
+                                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                      <i class="fas fa-key" style="color: #10b981;"></i>
+                                      <span style="color: #10b981; font-weight: 600;">maFile Authentication Ready</span>
+                                  </div>
+                                  <div id="selectedMaFileInfo" style="color: #10b981; font-size: 0.9rem;">
+                                      Click on an authenticator in the left sidebar to enable automatic Steam Guard code generation and streamline login
+                                  </div>
+                                  <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                                      <button id="switchToManualBtn" class="control-button" style="background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.3); color: #8b5cf6;">
+                                          <i class="fas fa-key"></i>
+                                          <span>Use Manual Steam Guard</span>
+                                      </button>
+                                  </div>
+                              </div>
+                             
+                             <button type="submit" class="login-btn">
+                                 <i class="fas fa-sign-in-alt"></i>
+                                 Login
+                             </button>
+                         </form>
+                     </div>
+                 </div>
+             </section>
+
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="dashboard-section" style="display: none;">
+                <div class="dashboard-header">
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="userDisplayName">User</span>
+                        <button id="logoutBtn" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <!-- Trade Offers -->
+                                         <div class="offers-section">
+                                                          <div class="section-header">
+                         <h3><i class="fas fa-exchange-alt"></i> Trade Offers</h3>
+                     </div>
+                     <div class="header-controls">
+                                              <div class="control-button auto-accept-toggle">
+                         <i class="fas fa-gift"></i>
+                         <span>Auto-accept gifts</span>
+                         <input type="checkbox" id="autoAcceptToggle">
+                     </div>
+                         <button id="checkConnectionBtn" class="control-button">
+                             <i class="fas fa-wifi"></i>
+                             <span>Check Connection</span>
+                         </button>
+                         <button id="refreshOffersBtn" class="control-button">
+                             <i class="fas fa-sync-alt"></i>
+                             <span>Refresh</span>
+                         </button>
+                         <button id="forceReconnectBtn" class="control-button">
+                             <i class="fas fa-plug"></i>
+                             <span>Force Reconnect</span>
+                         </button>
+                     </div>
+                        <div id="offersList" class="offers-list">
+                            <div class="no-offers">
+                                <i class="fas fa-inbox"></i>
+                                <p>No pending trade offers</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="activity-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                        </div>
+                        <div id="activityList" class="activity-list">
+                            <div class="no-activity">
+                                <i class="fas fa-clock"></i>
+                                <p>No recent activity</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Notifications -->
+        <div id="notifications" class="notifications"></div>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Processing...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
